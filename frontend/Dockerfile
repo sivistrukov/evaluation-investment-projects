@@ -1,9 +1,13 @@
-FROM node:alphine
+FROM node:20-alpine
 
 RUN mkdir /app
 WORKDIR /app
 
-COPY package.json
-RUN npm install
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY package.json .
+COPY package-lock.json .
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
 COPY . .
