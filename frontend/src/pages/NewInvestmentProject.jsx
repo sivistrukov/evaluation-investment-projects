@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 import Stack from '@mui/material/Stack';
 import CustomInput from '../components/ui/CustomInput';
@@ -198,8 +199,8 @@ function NewInvestmentProject() {
             ownCapital: Number(formData.get('ownCapital')),
             loanCoverage: Number(formData.get('loanCoverage')),
             implementationPeriod: {
-                start: new Date(projectImplementationPeriodStart),
-                end: new Date(projectImplementationPeriodEnd),
+                start: projectImplementationPeriodStart,
+                end: projectImplementationPeriodEnd,
             },
             totalCost: Number(projectTotalCost),
             amountFunds: {
@@ -256,209 +257,219 @@ function NewInvestmentProject() {
                 rows: workplacesRows,
             }
         }
-        console.log(JSON.stringify(data, null, 2))
-        // await axios.post('', data)
+        await axios.post('http://localhost:8080/api/projects', data, {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
     }
 
     return (
-        <form id={'form'}>
-            <div style={{display: isShowMainFactors ? "none" : "block"}}>
-                <div>
+        <>
+            <Link to={'/'}>
+                <Button type={'button'}>На главную</Button>
+            </Link>
+            <Gap/>
+            <form id={'form'}>
+                <div style={{display: isShowMainFactors ? "none" : "block"}}>
+                    <div>
+                        <CustomInput
+                            fullWidth='100%'
+                            label="Полное наименование инвестиционного проекта:"
+                            type="text"
+                            name="projectName"
+                        />
+                    </div>
+                    <Gap gap={30}/>
+                    <div>
+                        <Stack spacing={3}>
+                            <CustomInput
+                                fullWidth='100%'
+                                label="Размер собственных средств (собственный капитал) заемщика, млн. руб:"
+                                onChange={(e) => onOwnCapitalChange(e.target.value)}
+                                type="number"
+                                name="ownCapital"
+                                required
+                            />
+                            <CustomInput
+                                fullWidth='100%'
+                                label="Размер требуемых заемных средств (заемное финансирование), млн. руб.:"
+                                onChange={(e) => onBorrowedFundsChange(e.target.value)}
+                                type="number"
+                                name="loanCoverage"
+                                required
+
+                            />
+
+                        </Stack>
+                    </div>
+                    <Gap gap={30}/>
+                    <div>
+                        <label>Срок реализации проекта: </label>
+                        <Gap/>
+                        <Stack direction="row" spacing={2}>
+                            <CustomInput
+                                fullWidth='100%'
+                                type="date"
+                                name="projectImplementationPeriodStart"
+                                InputProps={{inputProps: {min: "1986-01-01"}}}
+
+                                onChange={(e) => {
+                                    setProjectImplementationPeriodStart(new Date(e.target.value))
+                                }}
+                            />
+                            <CustomInput
+                                fullWidth='100%'
+                                type="date"
+                                min="2018-01-01"
+                                max="2018-12-31"
+                                InputProps={{inputProps: {min: "1986-01-01"}}}
+                                name="projectImplementationPeriodEnd"
+                                onChange={(e) => {
+                                    setProjectImplementationPeriodEnd(new Date(e.target.value))
+                                }}
+                            />
+                        </Stack>
+                    </div>
+                    <Gap gap={30}/>
+                    <div>
+                        <label>
+                            Объем финансирования инвестиционного проекта по годам и на дату
+                            окончания срока реализации
+                        </label>
+                        <Gap/>
+                        <AmountOfFundingTable callback={getAmountOfFunding}
+                                              period={period}
+                        />
+                    </div>
+                    <Gap gap={30}/>
+                    <label>Общая стоимость инвестиционного проекта, млн. руб:</label>
+                    <Gap/>
                     <CustomInput
                         fullWidth='100%'
-                        label="Полное наименование инвестиционного проекта:"
-                        type="text"
-                        name="projectName"
+                        type="number"
+                        value={projectTotalCost}
+                        name="ownCapital"
+                        InputProps={{
+                            readOnly: true,
+                        }}
                     />
-                </div>
-                <Gap gap={30}/>
-                <div>
+                    <hr/>
+                    <Stack direction={"row"} alignItems="center">
+                        Количество продуктов:
+                        <Button onClick={() => {
+                            setProducts(prev =>
+                                products.length > 1 ? [...prev.slice(0, -1)] : [...prev])
+                        }}>
+                            -
+                        </Button>
+                        {products.length}
+                        <Button onClick={() => {
+                            setProducts(prev => [
+                                ...prev, {
+                                    index: prev.at(-1).index + 1,
+                                    name: "",
+                                }
+                            ])
+                        }}>
+                            +
+                        </Button>
+                    </Stack>
                     <Stack spacing={3}>
-                        <CustomInput
-                            fullWidth='100%'
-                            label="Размер собственных средств (собственный капитал) заемщика, млн. руб:"
-                            onChange={(e) => onOwnCapitalChange(e.target.value)}
-                            type="number"
-                            name="ownCapital"
-                            required
-                        />
-                        <CustomInput
-                            fullWidth='100%'
-                            label="Размер требуемых заемных средств (заемное финансирование), млн. руб.:"
-                            onChange={(e) => onBorrowedFundsChange(e.target.value)}
-                            type="number"
-                            name="loanCoverage"
-                            required
-
-                        />
-
+                        {products.map((product) =>
+                            <div key={product.index}>
+                                <Product period={period} product={product}
+                                         callback={getProduct}/>
+                            </div>
+                        )}
                     </Stack>
-                </div>
-                <Gap gap={30}/>
-                <div>
-                    <label>Срок реализации проекта: </label>
-                    <Gap/>
-                    <Stack direction="row" spacing={2}>
-                        <CustomInput
-                            fullWidth='100%'
-                            type="date"
-                            name="projectImplementationPeriodStart"
-                            InputProps={{inputProps: {min: "1986-01-01"}}}
-
-                            onChange={(e) => {
-                                setProjectImplementationPeriodStart(new Date(e.target.value))
-                            }}
-                        />
-                        <CustomInput
-                            fullWidth='100%'
-                            type="date"
-                            min="2018-01-01"
-                            max="2018-12-31"
-                            InputProps={{inputProps: {min: "1986-01-01"}}}
-                            name="projectImplementationPeriodEnd"
-                            onChange={(e) => {
-                                setProjectImplementationPeriodEnd(new Date(e.target.value))
-                            }}
-                        />
-                    </Stack>
-                </div>
-                <Gap gap={30}/>
-                <div>
-                    <label>
-                        Объем финансирования инвестиционного проекта по годам и на дату
-                        окончания срока реализации
-                    </label>
-                    <Gap/>
-                    <AmountOfFundingTable callback={getAmountOfFunding}
-                                          period={period}
-                    />
-                </div>
-                <Gap gap={30}/>
-                <label>Общая стоимость инвестиционного проекта, млн. руб:</label>
-                <Gap/>
-                <CustomInput
-                    fullWidth='100%'
-                    type="number"
-                    value={projectTotalCost}
-                    name="ownCapital"
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                />
-                <hr/>
-                <Stack direction={"row"} alignItems="center">
-                    Количество продуктов:
-                    <Button onClick={() => {
-                        setProducts(prev =>
-                            products.length > 1 ? [...prev.slice(0, -1)] : [...prev])
-                    }}>
-                        -
-                    </Button>
-                    {products.length}
-                    <Button onClick={() => {
-                        setProducts(prev => [
-                            ...prev, {
-                                index: prev.at(-1).index + 1,
-                                name: "",
-                            }
-                        ])
-                    }}>
-                        +
-                    </Button>
-                </Stack>
-                <Stack spacing={3}>
-                    {products.map((product) =>
-                        <div key={product.index}>
-                            <Product period={period} product={product}
-                                     callback={getProduct}/>
-                        </div>
-                    )}
-                </Stack>
-                <Gap gap={30}/>
-                <WorkPlaces period={period} callback={getWorkPlaces}/>
-                <Gap gap={30}/>
-                <AverageWagesOfWorkers period={period}
-                                       callback={getAverageWagesOfWorkers}/>
-                <Gap gap={30}/>
-                <DevelopmentAndApprovalProjectDocumentationTable
-                    callback={getDevelopmentAndApprovalProjectDocumentation}/>
-                <Gap gap={30}/>
-                <ConstructionAndInstallationWorksTable
-                    callback={getConstructionAndInstallationWorks}/>
-                <Gap gap={30}/>
-                <PurchaseEquipmentTable callback={getPurchaseEquipment}/>
-                <Gap gap={30}/>
-                <ProductionTable callback={getProduction}/>
-                <Gap gap={30}/>
-                <OtherStagesTable callback={getOtherStages}/>
-                <Gap gap={30}/>
-                <CustomInput
-                    type="number"
-                    label="Ставка дисконтирования"
-                    onChange={(e) => setDiscountRate(e.target.value)}
-                />
-                <Gap/>
-                <Button type="button"
-                        variant="contained"
-                        onClick={calculateMainFactors}
-                >
-                    Рассчитать основные показатели
-                </Button>
-            </div>
-            <div style={{display: isShowMainFactors ? "block" : "none"}}>
-                <Button type="button"
-                        variant="contained"
-                        onClick={onBackBtnClick}
-                >
-                    Назад
-                </Button>
-                <Gap gap={30}/>
-                <Stack>
-                    <label>NPV, руб.:</label>
-                    <Gap/>
+                    <Gap gap={30}/>
+                    <WorkPlaces period={period} callback={getWorkPlaces}/>
+                    <Gap gap={30}/>
+                    <AverageWagesOfWorkers period={period}
+                                           callback={getAverageWagesOfWorkers}/>
+                    <Gap gap={30}/>
+                    <DevelopmentAndApprovalProjectDocumentationTable
+                        callback={getDevelopmentAndApprovalProjectDocumentation}/>
+                    <Gap gap={30}/>
+                    <ConstructionAndInstallationWorksTable
+                        callback={getConstructionAndInstallationWorks}/>
+                    <Gap gap={30}/>
+                    <PurchaseEquipmentTable callback={getPurchaseEquipment}/>
+                    <Gap gap={30}/>
+                    <ProductionTable callback={getProduction}/>
+                    <Gap gap={30}/>
+                    <OtherStagesTable callback={getOtherStages}/>
+                    <Gap gap={30}/>
                     <CustomInput
-                        fullWidth='100%'
-                        value={npv.toFixed(2)}
-                        name="npv"
-                        InputProps={{
-                            readOnly: true,
-                        }}
+                        type="number"
+                        label="Ставка дисконтирования"
+                        onChange={(e) => setDiscountRate(e.target.value)}
                     />
-                    <Gap/>
-                    <label>IRR:</label>
-                    <Gap/>
-                    <CustomInput
-                        fullWidth='100%'
-                        value={irr.toFixed(2) + ' %'}
-                        name="irr"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    <Gap/>
-                    <label>Дисконтированный срок окупаемости:</label>
-                    <Gap/>
-                    <CustomInput
-                        fullWidth='100%'
-                        value={discountPaybackPeriod}
-                        name="discountPaybackPeriod"
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    <Gap/>
-                    <LaborProductivityTable period={period} employers={workPlaces.years}
-                                            products={products} setLaborRows={setLaborProductivity}/>
                     <Gap/>
                     <Button type="button"
                             variant="contained"
-                            onClick={onSendData}
+                            onClick={calculateMainFactors}
                     >
-                        Отправить
+                        Рассчитать основные показатели
                     </Button>
-                </Stack>
-            </div>
-        </form>
+                </div>
+                <div style={{display: isShowMainFactors ? "block" : "none"}}>
+                    <Button type="button"
+                            variant="contained"
+                            onClick={onBackBtnClick}
+                    >
+                        Назад
+                    </Button>
+                    <Gap gap={30}/>
+                    <Stack>
+                        <label>NPV, руб.:</label>
+                        <Gap/>
+                        <CustomInput
+                            fullWidth='100%'
+                            value={npv.toFixed(2)}
+                            name="npv"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <Gap/>
+                        <label>IRR:</label>
+                        <Gap/>
+                        <CustomInput
+                            fullWidth='100%'
+                            value={irr.toFixed(2) + ' %'}
+                            name="irr"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <Gap/>
+                        <label>Дисконтированный срок окупаемости:</label>
+                        <Gap/>
+                        <CustomInput
+                            fullWidth='100%'
+                            value={discountPaybackPeriod}
+                            name="discountPaybackPeriod"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <Gap/>
+                        <LaborProductivityTable period={period} employers={workPlaces.years}
+                                                products={products} setLaborRows={setLaborProductivity}/>
+                        <Gap/>
+                        <Button type="button"
+                                variant="contained"
+                                onClick={onSendData}
+                        >
+                            Отправить
+                        </Button>
+                    </Stack>
+                </div>
+            </form>
+        </>
     );
 }
 

@@ -2,6 +2,7 @@ import './styles/App.css';
 import NewInvestmentProject from "./pages/NewInvestmentProject";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import InvestmentProjectsList from "./pages/InvestmentProjectsList";
+import InvestmentProjectDetail from "./pages/InvestmentProjectDetail";
 
 function App() {
     return (
@@ -9,6 +10,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path={'/'} element={<InvestmentProjectsList/>}/>
+                    <Route path={'/:projectId'} element={<InvestmentProjectDetail/>}/>
                     <Route path={'/new/'} element={<NewInvestmentProject/>}/>
                 </Routes>
             </BrowserRouter>
