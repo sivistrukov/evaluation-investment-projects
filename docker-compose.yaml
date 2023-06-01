@@ -3,22 +3,49 @@ services:
   backend:
     container_name: backend
     build: ./backend
+    restart: always
     command: sh -c "uvicorn src.main:app --host 0.0.0.0 --port 8080 --reload"
     ports:
       - '8080:8080'
+    depends_on:
+      - mongo
     volumes:
       - ./backend:/app
 
   frontend:
     container_name: frontend
     build: ./frontend
+    restart: always
     command: sh -c "npm run start"
     ports:
       - '3000:3000'
     environment:
-      - NODE_PATH=/app/node_modules/.bin
+      NODE_PATH: /app/node_modules/.bin
     depends_on:
       - backend
     volumes:
       - ./frontend/src:/app/src
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password123
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password123
+      ME_CONFIG_MONGODB_URL: mongodb://root:password123@mongo:27017/
       
