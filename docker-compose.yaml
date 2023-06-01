@@ -15,8 +15,10 @@ services:
     command: sh -c "npm run start"
     ports:
       - '3000:3000'
+    environment:
+      - NODE_PATH=/app/node_modules/.bin
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app
+      - ./frontend/src:/app/src
       
