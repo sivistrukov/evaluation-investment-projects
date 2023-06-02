@@ -79,3 +79,21 @@ class InvestmentProjectPost(BaseModel):
 
 class InvestmentProjectGetMulti(BaseModel):
     fullName: str
+    totalCost: float
+    totalWorkplaces: int
+
+
+class InvestmentProjectGet(BaseModel):
+    fullName: str
+    ownCapital: float
+    loanCoverage: float
+    implementationPeriod: ImplementationPeriod
+    totalCost: float
+    amountFunds: AmountFunds
+    products: List[Product]
+    projectImplementationStages: ProjectImplementationStages
+    discountRate: float
+    npv: float
+    irr: float
+    discountPaybackPeriod: str
+    workplaces: WorkPlaces

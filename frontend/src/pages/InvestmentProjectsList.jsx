@@ -13,6 +13,7 @@ import CustomInput from "../components/ui/CustomInput";
 
 function InvestmentProjectsList() {
     const [investmentProjects, setInvestmentProjects] = useState([])
+    const [currInvestmentProjects, setCurrInvestmentProjects] = useState(investmentProjects)
 
     useEffect(() => {
         getInvestmentProjects().then((data) => {
@@ -20,35 +21,60 @@ function InvestmentProjectsList() {
         })
     }, [])
 
+    useEffect(() => {
+        setCurrInvestmentProjects(investmentProjects)
+    }, [investmentProjects])
+
     const getInvestmentProjects = async () => {
         return await axios.get('http://localhost:8080/api/projects')
     }
+
+    const onSearchFieldChange = (value) => {
+        if (value) {
+            setCurrInvestmentProjects(
+                investmentProjects.filter((item) => item.fullName.includes(value))
+            )
+        } else {
+            setCurrInvestmentProjects(investmentProjects)
+        }
+    }
+
     return (
         <div>
             <Link to={'/new/'}>
                 <Button type={'button'}>Новый инвестиционный проект</Button>
             </Link>
             <Gap/>
-            <CustomInput label={'Название проекта'}/>
+            <CustomInput
+                label={'Название проекта'}
+                onChange={(e) => onSearchFieldChange(e.target.value)}
+            />
             <Gap/>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
                             <TableCell>Название проекта</TableCell>
+                            <TableCell>
+                                Кол-во создаваемых рабочих мест
+                            </TableCell>
+                            <TableCell>
+                                Общая стоимость инвестиционного проекта, млн.
+                                руб
+                            </TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {investmentProjects.map((item, index) =>
+                        {currInvestmentProjects.map((item, index) =>
                             <TableRow key={index}>
-                                <TableCell>{index}</TableCell>
                                 <TableCell>
-                                    HUI - {item.fullName}
+                                    {item.fullName}
                                 </TableCell>
+                                <TableCell>{item.totalWorkplaces}</TableCell>
+                                <TableCell>{item.totalCost}</TableCell>
                                 <TableCell>
-                                    <Link to={`/${index}`}>
+                                    <Link to={`/${item.fullName}`}>
                                         <Button type={'button'}>детали</Button>
                                     </Link>
                                 </TableCell>

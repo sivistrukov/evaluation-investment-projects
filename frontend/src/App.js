@@ -10,7 +10,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path={'/'} element={<InvestmentProjectsList/>}/>
-                    <Route path={'/:projectId'} element={<InvestmentProjectDetail/>}/>
+                    <Route path={'/:projectName'} element={<InvestmentProjectDetail/>}/>
                     <Route path={'/new/'} element={<NewInvestmentProject/>}/>
                 </Routes>
             </BrowserRouter>
