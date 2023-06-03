@@ -38,7 +38,7 @@ const InvestmentProjectDetail = () => {
             <label>Ставка дисконтирования:</label>
             <Gap/>
             <CustomInput
-                value={investmentProject?.discountRate}
+                value={investmentProject?.discountRate?.toFixed(2)}
                 InputProps={{
                     readOnly: true,
                 }}
@@ -47,7 +47,7 @@ const InvestmentProjectDetail = () => {
             <label>NPV, руб.:</label>
             <Gap/>
             <CustomInput
-                value={investmentProject?.npv}
+                value={investmentProject?.npv?.toFixed(2)}
                 InputProps={{
                     readOnly: true,
                 }}
@@ -56,7 +56,7 @@ const InvestmentProjectDetail = () => {
             <label>IRR:</label>
             <Gap/>
             <CustomInput
-                value={investmentProject?.irr}
+                value={investmentProject?.irr?.toFixed(2)}
                 InputProps={{
                     readOnly: true,
                 }}
@@ -74,7 +74,7 @@ const InvestmentProjectDetail = () => {
             <Gap gap={30}/>
             <label>Размер собственных средств (собственный капитал) заемщика, млн. руб.:</label>
             <Gap/>
-            <CustomInput value={investmentProject.ownCapital}
+            <CustomInput value={investmentProject?.ownCapital?.toFixed(2)}
                          InputProps={{
                              readOnly: true,
                          }}
@@ -82,7 +82,7 @@ const InvestmentProjectDetail = () => {
             <Gap gap={30}/>
             <label>Размер требуемых заемных средств (заемное финансирование), млн. руб.:</label>
             <Gap/>
-            <CustomInput value={investmentProject.loanCoverage}
+            <CustomInput value={investmentProject?.loanCoverage?.toFixed(2)}
                          InputProps={{
                              readOnly: true,
                          }}
@@ -119,7 +119,7 @@ const InvestmentProjectDetail = () => {
             <label>Общая стоимость инвестиционного проекта, млн. руб:</label>
             <Gap/>
             <CustomInput
-                value={investmentProject?.totalCost}
+                value={investmentProject?.totalCost?.toFixed(2)}
                 InputProps={{
                     readOnly: true,
                 }}
