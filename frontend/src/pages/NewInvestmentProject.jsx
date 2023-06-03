@@ -15,9 +15,12 @@ import ConstructionAndInstallationWorksTable
     from '../components/modules/ConstructionAndInstallationWorksTable/ConstructionAndInstallationWorksTable';
 import PurchaseEquipmentTable
     from '../components/modules/PurchaseEquipmentTable/PurchaseEquipmentTable';
-import ProductionTable from '../components/modules/ProductionTable/ProductionTable';
-import OtherStagesTable from '../components/modules/OtherStagesTable/OtherStagesTable';
-import LaborProductivityTable from "../components/modules/LaborProductivityTable";
+import ProductionTable
+    from '../components/modules/ProductionTable/ProductionTable';
+import OtherStagesTable
+    from '../components/modules/OtherStagesTable/OtherStagesTable';
+import LaborProductivityTable
+    from "../components/modules/LaborProductivityTable";
 import axios from "axios";
 
 function NewInvestmentProject() {
@@ -212,7 +215,10 @@ function NewInvestmentProject() {
             },
             products: products.map((item) => ({
                 name: item.name,
-                demand: item.demand.years.map((i) => ({year: i.year, value: Number(i.value)})),
+                demand: item.demand.years.map((i) => ({
+                    year: i.year,
+                    value: Number(i.value)
+                })),
                 volume: item.volume.years.map((i) => ({
                     year: i.year,
                     natural: Number(i.natural),
@@ -335,7 +341,8 @@ function NewInvestmentProject() {
                     <Gap gap={30}/>
                     <div>
                         <label>
-                            Объем финансирования инвестиционного проекта по годам и на дату
+                            Объем финансирования инвестиционного проекта по
+                            годам и на дату
                             окончания срока реализации
                         </label>
                         <Gap/>
@@ -344,7 +351,8 @@ function NewInvestmentProject() {
                         />
                     </div>
                     <Gap gap={30}/>
-                    <label>Общая стоимость инвестиционного проекта, млн. руб:</label>
+                    <label>Общая стоимость инвестиционного проекта, млн.
+                        руб:</label>
                     <Gap/>
                     <CustomInput
                         fullWidth='100%'
@@ -457,15 +465,19 @@ function NewInvestmentProject() {
                             }}
                         />
                         <Gap/>
-                        <LaborProductivityTable period={period} employers={workPlaces.years}
-                                                products={products} setLaborRows={setLaborProductivity}/>
+                        <LaborProductivityTable period={period}
+                                                employers={workPlaces.years}
+                                                products={products}
+                                                setLaborRows={setLaborProductivity}/>
                         <Gap/>
-                        <Button type="button"
-                                variant="contained"
-                                onClick={onSendData}
-                        >
-                            Отправить
-                        </Button>
+                        <Link to={'/'}>
+                            <Button type="button"
+                                    variant="contained"
+                                    onClick={onSendData}
+                            >
+                                Отправить
+                            </Button>
+                        </Link>
                     </Stack>
                 </div>
             </form>

@@ -41,7 +41,7 @@ function InvestmentProjectsList() {
 
     return (
         <div>
-            <Link to={'/new/'}>
+            <Link to={'/new-investment-project/'}>
                 <Button type={'button'}>Новый инвестиционный проект</Button>
             </Link>
             <Gap/>

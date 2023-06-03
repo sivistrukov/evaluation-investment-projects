@@ -11,7 +11,7 @@ function App() {
                 <Routes>
                     <Route path={'/'} element={<InvestmentProjectsList/>}/>
                     <Route path={'/:projectName'} element={<InvestmentProjectDetail/>}/>
-                    <Route path={'/new/'} element={<NewInvestmentProject/>}/>
+                    <Route path={'/new-investment-project/'} element={<NewInvestmentProject/>}/>
                 </Routes>
             </BrowserRouter>
         </div>
