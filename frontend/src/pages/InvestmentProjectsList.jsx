@@ -10,15 +10,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import CustomInput from "../components/ui/CustomInput";
+import Stack from '@mui/material/Stack';
 
 function InvestmentProjectsList() {
     const [investmentProjects, setInvestmentProjects] = useState([])
     const [currInvestmentProjects, setCurrInvestmentProjects] = useState(investmentProjects)
 
     useEffect(() => {
-        getInvestmentProjects().then((data) => {
-            setInvestmentProjects(data.data)
-        })
+        setTimeout(
+            () => getInvestmentProjects().then((data) => {
+                setInvestmentProjects(data.data)
+            }), 500
+        )
     }, [])
 
     useEffect(() => {
@@ -39,11 +42,36 @@ function InvestmentProjectsList() {
         }
     }
 
+    const onDownloadButtonClick = () => {
+        axios({
+            url: 'http://localhost:8080/api/projects/download',
+            method: 'GET',
+            responseType: 'blob', // Important
+        }).then((response) => {
+            const href = URL.createObjectURL(response.data);
+
+            const link = document.createElement('a');
+            link.href = href;
+            link.setAttribute('download', 'инвестиционные_проекты.xlsx'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
+        });
+    }
+
     return (
         <div>
-            <Link to={'/new-investment-project/'}>
-                <Button type={'button'}>Новый инвестиционный проект</Button>
-            </Link>
+            <Stack direction={'row'}>
+                <Link to={'/new-investment-project/'}>
+                    <Button type={'button'}>Новый инвестиционный проект</Button>
+                </Link>
+                <Gap/>
+                <Button type={'button'} onClick={onDownloadButtonClick}>
+                    Выгрузить
+                </Button>
+            </Stack>
             <Gap/>
             <CustomInput
                 label={'Название проекта'}

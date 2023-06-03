@@ -1,10 +1,13 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from pymongo import MongoClient
 
-from src.db import get_db
 from src import schemas
+from src.config import settings
+from src.db import get_db
+from src.services import export_investment_projects_by_excel
 
 router = APIRouter()
 
@@ -32,6 +35,15 @@ def create_new_investment_project(
 ):
     db.projects.insert_one(payload.dict())
     return
+
+
+@router.get(
+    path='/download',
+    status_code=status.HTTP_200_OK,
+    response_class=FileResponse
+)
+def download_excel(db: MongoClient = Depends(get_db)):
+    return export_investment_projects_by_excel(db)
 
 
 @router.get(

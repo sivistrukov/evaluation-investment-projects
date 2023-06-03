@@ -17,3 +17,5 @@ watchfiles==0.19.0
 websockets==11.0.3
 dnspython==2.3.0
 pymongo==4.3.3
+pandas==2.0.2
+openpyxl==3.1.2
