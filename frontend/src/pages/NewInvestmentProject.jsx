@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 import Stack from '@mui/material/Stack';
 import CustomInput from '../components/ui/CustomInput';
+import CustomSelect from '../components/ui/CustomSelect'
 import AmountOfFundingTable from '../components/modules/AmountOfFundingTable';
 import Gap from '../components/ui/Gap';
 import {Button} from "@mui/material";
@@ -45,6 +46,7 @@ function NewInvestmentProject() {
     const [averageWagesOfWorkers, setAverageWagesOfWorkers] = useState([])
     const [discountRate, setDiscountRate] = useState(0)
     const [npv, setNpv] = useState(0)
+    const [pi, setPi] = useState(0)
     const [irr, setIrr] = useState(0)
     const [discountPaybackPeriod, setDiscountPaybackPeriod] = useState('-')
 
@@ -165,6 +167,7 @@ function NewInvestmentProject() {
             }
         }
         setIrr(rate)
+        setPi(Number(projectTotalCost) === 0 ? 0 : Number(npv) / Number(projectTotalCost))
 
 
         setIsShowMainFactors(true)
@@ -256,6 +259,7 @@ function NewInvestmentProject() {
 
             discountRate: Number(discountRate),
             npv: Number(npv),
+            pi: Number(pi),
             irr: Number(irr),
             discountPaybackPeriod: discountPaybackPeriod,
             workplaces: {
@@ -363,6 +367,16 @@ function NewInvestmentProject() {
                             readOnly: true,
                         }}
                     />
+                    <Gap/>
+                    <label>
+                        Отраслевая принадлежность инвестиционного проекта в
+                        соответствии со следующей отраслевой
+                        классификацией
+                    </label>
+                    <Gap/>
+                    <CustomSelect>
+                        
+                    </CustomSelect>
                     <hr/>
                     <Stack direction={"row"} alignItems="center">
                         Количество продуктов:
@@ -443,6 +457,18 @@ function NewInvestmentProject() {
                             }}
                         />
                         <Gap/>
+                        <label>PI:</label>
+                        <Gap/>
+                        <CustomInput
+                            fullWidth='100%'
+                            value={pi.toFixed(2)}
+                            name="pi"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        <Gap/>
+                        <Gap/>
                         <label>IRR:</label>
                         <Gap/>
                         <CustomInput
@@ -454,7 +480,8 @@ function NewInvestmentProject() {
                             }}
                         />
                         <Gap/>
-                        <label>Дисконтированный срок окупаемости:</label>
+                        <label>Дисконтированный срок окупаемости (в
+                            годах):</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'

@@ -72,6 +72,7 @@ class InvestmentProjectPost(BaseModel):
     projectImplementationStages: ProjectImplementationStages
     discountRate: float
     npv: float
+    pi: float
     irr: float
     discountPaybackPeriod: str
     workplaces: WorkPlaces
@@ -94,6 +95,7 @@ class InvestmentProjectGet(BaseModel):
     projectImplementationStages: ProjectImplementationStages
     discountRate: float
     npv: float
+    pi: float
     irr: float
     discountPaybackPeriod: str
     workplaces: WorkPlaces
