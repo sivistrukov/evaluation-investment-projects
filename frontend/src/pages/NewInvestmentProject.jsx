@@ -3,7 +3,6 @@ import {Link} from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 import Stack from '@mui/material/Stack';
 import CustomInput from '../components/ui/CustomInput';
-import CustomSelect from '../components/ui/CustomSelect'
 import AmountOfFundingTable from '../components/modules/AmountOfFundingTable';
 import Gap from '../components/ui/Gap';
 import {Button} from "@mui/material";
@@ -23,6 +22,7 @@ import OtherStagesTable
 import LaborProductivityTable
     from "../components/modules/LaborProductivityTable";
 import axios from "axios";
+import CustomAutocomplete from "../components/ui/CustomAutocomplete";
 
 function NewInvestmentProject() {
     const [projectImplementationPeriodStart, setProjectImplementationPeriodStart] = useState(new Date());
@@ -105,41 +105,60 @@ function NewInvestmentProject() {
         setAverageWagesOfWorkers(value)
     }
 
-    const calculateMainFactors = () => {
-        const calculateDiscountedProfit = (rate) => {
-            let income = []
-            let expense = []
-            let diff = projectImplementationPeriodEnd.getFullYear() - projectImplementationPeriodStart.getFullYear()
-            for (let year = 0; year <= diff; year++) {
-                let exp = 0
-                let inc = 0
-                if (year === 0) exp += Number(borrowedFunds) + Number(ownCapital)
-                exp += Number(amountFunds.years[year].fund)
-                products.forEach(product => {
-                    exp += Number(product.volume.years[year].cost)
-                    inc += Number(product.demand.years[year].value)
-                })
-                workPlaces?.years?.slice(0, year + 1).forEach((item, idx) => {
-                    exp += Number(item.count) * Number(averageWagesOfWorkers[idx].wages)
-                })
-                expense.push(exp)
-
-                income.push(inc)
-            }
-            let incomeWithDiscount = [...income.map((item, idx) => item / ((1 + rate / 100) ** idx))]
-            let expenseWithDiscount = [...expense.map((item, idx) => item / ((1 + rate / 100) ** idx))]
-            return [...incomeWithDiscount.map((item, idx) => item - expenseWithDiscount[idx])]
-        }
-
-        let profit = calculateDiscountedProfit(Number(discountRate))
-
-        const calculateNpv = (profit) => {
-            let sum = 0
-            profit.forEach((item, idx) => {
-                sum += Number(item)
+    const calculateDiscountedProfit = (rate) => {
+        let income = []
+        let expense = []
+        let diff = projectImplementationPeriodEnd.getFullYear() - projectImplementationPeriodStart.getFullYear()
+        for (let year = 0; year <= diff; year++) {
+            let exp = 0
+            let inc = 0
+            if (year === 0) exp += Number(borrowedFunds) + Number(ownCapital)
+            exp += Number(amountFunds.years[year].fund)
+            products.forEach(product => {
+                exp += Number(product.volume.years[year].cost)
+                inc += Number(product.demand.years[year].value)
             })
-            return sum
+            workPlaces?.years?.slice(0, year + 1).forEach((item, idx) => {
+                exp += Number(item.count) * Number(averageWagesOfWorkers[idx].wages)
+            })
+            expense.push(exp)
+
+            income.push(inc)
         }
+        let incomeWithDiscount = income.map((item, idx) => item / ((1 + rate / 100) ** (idx + 1)))
+        let expenseWithDiscount = expense.map((item, idx) => item / ((1 + rate / 100) ** (idx + 1)))
+        return incomeWithDiscount.map((item, idx) => item - expenseWithDiscount[idx])
+    }
+
+    const calculateNpv = (profit) => {
+        let sum = 0
+        profit.forEach((item, idx) => {
+            sum += Number(item)
+        })
+        return sum
+    }
+
+    const calculateIrr = (npv, discountRate) => {
+        let tempNpv = Number(npv)
+        let rate = Number(discountRate)
+        if (npv > 0) {
+            while (Math.trunc(tempNpv) > 0) {
+                rate += .01
+                let tempProfit = calculateDiscountedProfit(Number(rate))
+                tempNpv = calculateNpv(tempProfit)
+            }
+        } else {
+            while (Math.trunc(tempNpv) < 0) {
+                rate -= .01
+                let tempProfit = calculateDiscountedProfit(Number(rate))
+                tempNpv = calculateNpv(tempProfit)
+            }
+        }
+        return rate
+    }
+
+    const calculateMainFactors = () => {
+        let profit = calculateDiscountedProfit(Number(discountRate))
         setNpv(calculateNpv(profit))
 
         let sumProfit = 0;
@@ -151,26 +170,10 @@ function NewInvestmentProject() {
             }
         }
 
-        let tempNpv = Number(npv)
-        let rate = Number(discountRate)
-        if (npv > 0) {
-            while (tempNpv > 0) {
-                rate += .01
-                let tempProfit = calculateDiscountedProfit(Number(rate))
-                tempNpv = calculateNpv(tempProfit)
-            }
-        } else {
-            while (tempNpv < 0) {
-                rate -= .01
-                let tempProfit = calculateDiscountedProfit(Number(rate))
-                tempNpv = calculateNpv(tempProfit)
-            }
-        }
-        setIrr(rate)
-        setPi(Number(projectTotalCost) === 0 ? 0 : Number(npv) / Number(projectTotalCost))
-
-
-        setIsShowMainFactors(true)
+        setTimeout(
+            () => {
+                setIsShowMainFactors(true)
+            }, 500)
     }
 
     const onBackBtnClick = () => {
@@ -179,6 +182,13 @@ function NewInvestmentProject() {
     useEffect(() => {
         setProjectTotalCost(Number(ownCapital) + Number(borrowedFunds) + Number(amountFunds.summary))
     }, [ownCapital, borrowedFunds, amountFunds])
+
+    useEffect(() => {
+        if (npv) {
+            setPi(Number(projectTotalCost) === 0 ? 0 : Number(npv) / Number(projectTotalCost))
+            discountRate && setIrr(calculateIrr(npv, discountRate))
+        }
+    }, [projectTotalCost, npv])
 
     useEffect(() => {
         if (debouncedPeriodStart && debouncedPeriodEnd) {
@@ -204,6 +214,7 @@ function NewInvestmentProject() {
             fullName: formData.get('projectName'),
             ownCapital: Number(formData.get('ownCapital')),
             loanCoverage: Number(formData.get('loanCoverage')),
+            industry: formData.get('industry'),
             implementationPeriod: {
                 start: projectImplementationPeriodStart,
                 end: projectImplementationPeriodEnd,
@@ -368,15 +379,35 @@ function NewInvestmentProject() {
                         }}
                     />
                     <Gap/>
-                    <label>
-                        Отраслевая принадлежность инвестиционного проекта в
+                    <CustomAutocomplete
+                        key={'autocomplete'}
+                        required={true}
+                        getOptionLabel={(option) => option.name}
+                        name={'industry'}
+                        label='Отраслевая принадлежность инвестиционного проекта в
                         соответствии со следующей отраслевой
-                        классификацией
-                    </label>
-                    <Gap/>
-                    <CustomSelect>
-                        
-                    </CustomSelect>
+                        классификацией'
+                        options={[
+                            {id: 0, name: 'автомобильная промышленность'},
+                            {id: 1, name: 'железнодорожное машиностроение'},
+                            {id: 3, name: 'авиационная промышленность'},
+                            {id: 4, name: 'судостроение'},
+                            {id: 5, name: 'станкоинструментальная промышленность'},
+                            {id: 6, name: 'тяжелое машиностроение'},
+                            {id: 7, name: 'нефтегазовое машиностроение'},
+                            {id: 8, name: 'энергетическое машиностроение'},
+                            {id: 9, name: 'химическая промышленность'},
+                            {id: 10, name: 'сельскохозяйственное машиностроение'},
+                            {id: 11, name: 'строительно-дорожное машиностроение'},
+                            {id: 12, name: 'машиностроение для пищевой и перерабатывающей промышленности'},
+                            {id: 13, name: 'черная металлургия'},
+                            {id: 14, name: 'промышленность строительных материалов'},
+                            {id: 15, name: 'легкая промышленность, лесопромышленный комплекс'},
+                            {id: 16, name: 'фармацевтическая промышленность'},
+                            {id: 17, name: 'медицинская промышленность'},
+                            {id: 18, name: 'радиоэлектронная промышленность'},
+                        ]}
+                    />
                     <hr/>
                     <Stack direction={"row"} alignItems="center">
                         Количество продуктов:

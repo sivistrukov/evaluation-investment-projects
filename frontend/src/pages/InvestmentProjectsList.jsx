@@ -103,7 +103,7 @@ function InvestmentProjectsList() {
                                 <TableCell>{item.totalCost}</TableCell>
                                 <TableCell>
                                     <Link to={`/${item.fullName}`}>
-                                        <Button type={'button'}>детали</Button>
+                                        <Button type={'button'}>паспорт</Button>
                                     </Link>
                                 </TableCell>
                             </TableRow>

@@ -65,6 +65,7 @@ class InvestmentProjectPost(BaseModel):
     fullName: str
     ownCapital: float
     loanCoverage: float
+    industry: str
     implementationPeriod: ImplementationPeriod
     totalCost: float
     amountFunds: AmountFunds
@@ -88,6 +89,7 @@ class InvestmentProjectGet(BaseModel):
     fullName: str
     ownCapital: float
     loanCoverage: float
+    industry: str
     implementationPeriod: ImplementationPeriod
     totalCost: float
     amountFunds: AmountFunds
