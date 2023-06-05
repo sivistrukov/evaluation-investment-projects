@@ -477,7 +477,7 @@ function NewInvestmentProject() {
                     </Button>
                     <Gap gap={30}/>
                     <Stack>
-                        <label>NPV, руб.:</label>
+                        <label style={{color: Number(npv) < 0 && 'red'}}>NPV, руб.:</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'
@@ -488,7 +488,7 @@ function NewInvestmentProject() {
                             }}
                         />
                         <Gap/>
-                        <label>PI:</label>
+                        <label style={{color: Number(pi) < 0 && 'red'}}>PI:</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'
@@ -500,7 +500,7 @@ function NewInvestmentProject() {
                         />
                         <Gap/>
                         <Gap/>
-                        <label>IRR:</label>
+                        <label style={{color: Number(irr) < 0 && 'red'}}>IRR:</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'

@@ -68,6 +68,10 @@ function InvestmentProjectsList() {
                     <Button type={'button'}>Новый инвестиционный проект</Button>
                 </Link>
                 <Gap/>
+                <Link to={'/stats/'}>
+                    <Button type={'button'}>Статистика</Button>
+                </Link>
+                <Gap/>
                 <Button type={'button'} onClick={onDownloadButtonClick}>
                     Выгрузить
                 </Button>
@@ -84,6 +88,9 @@ function InvestmentProjectsList() {
                         <TableRow>
                             <TableCell>Название проекта</TableCell>
                             <TableCell>
+                                Отрасль
+                            </TableCell>
+                            <TableCell>
                                 Кол-во создаваемых рабочих мест
                             </TableCell>
                             <TableCell>
@@ -98,6 +105,9 @@ function InvestmentProjectsList() {
                             <TableRow key={index}>
                                 <TableCell>
                                     {item.fullName}
+                                </TableCell>
+                                <TableCell>
+                                    {item.industry}
                                 </TableCell>
                                 <TableCell>{item.totalWorkplaces}</TableCell>
                                 <TableCell>{item.totalCost}</TableCell>

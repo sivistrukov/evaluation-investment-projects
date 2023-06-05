@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 
 from pydantic import BaseModel
 
@@ -83,6 +83,7 @@ class InvestmentProjectGetMulti(BaseModel):
     fullName: str
     totalCost: float
     totalWorkplaces: int
+    industry: str
 
 
 class InvestmentProjectGet(BaseModel):
@@ -101,3 +102,13 @@ class InvestmentProjectGet(BaseModel):
     irr: float
     discountPaybackPeriod: str
     workplaces: WorkPlaces
+
+
+class ProjectIndustry(BaseModel):
+    count: int
+    summaryCost: float
+
+
+class Stats(BaseModel):
+    projectsCount: int
+    projectsByIndustry: Dict[str, ProjectIndustry]

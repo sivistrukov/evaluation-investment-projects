@@ -5,7 +5,6 @@ from fastapi.responses import FileResponse
 from pymongo import MongoClient
 
 from src import schemas
-from src.config import settings
 from src.db import get_db
 from src.services import export_investment_projects_by_excel
 
@@ -23,7 +22,8 @@ def get_list_of_investment_projects(
     projects = [{
         'fullName': project['fullName'],
         'totalCost': project['totalCost'],
-        'totalWorkplaces': project['workplaces']['total']
+        'totalWorkplaces': project['workplaces']['total'],
+        'industry': project['industry']
     } for project in list(db.projects.find())]
     return projects
 

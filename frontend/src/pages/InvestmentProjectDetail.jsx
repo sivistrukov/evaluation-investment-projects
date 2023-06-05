@@ -34,7 +34,7 @@ const InvestmentProjectDetail = () => {
                      }}
         />
         <Gap gap={30}/>
-        <label>Ставка дисконтирования:</label>
+        <label style={{color: Number(investmentProject?.irr) < 0 && 'red'}}>Ставка дисконтирования:</label>
         <Gap/>
         <CustomInput
             value={investmentProject?.discountRate?.toFixed(2)}
@@ -43,7 +43,7 @@ const InvestmentProjectDetail = () => {
             }}
         />
         <Gap gap={30}/>
-        <label>NPV, руб.:</label>
+        <label style={{color: Number(investmentProject?.npv) < 0 && 'red'}}>NPV, руб.:</label>
         <Gap/>
         <CustomInput
             value={investmentProject?.npv?.toFixed(2)}
@@ -52,7 +52,7 @@ const InvestmentProjectDetail = () => {
             }}
         />
         <Gap gap={30}/>
-        <label>PI:</label>
+        <label style={{color: Number(investmentProject?.pi) < 0 && 'red'}}>PI:</label>
         <Gap/>
         <CustomInput
             value={investmentProject?.pi?.toFixed(2)}
