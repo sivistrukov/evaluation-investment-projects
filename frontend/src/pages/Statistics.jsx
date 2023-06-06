@@ -5,6 +5,7 @@ import {Button} from "@mui/material";
 import Stack from '@mui/material/Stack';
 import CustomInput from "../components/ui/CustomInput";
 import axios from "axios";
+import BarChart from "../components/ui/BarChart";
 
 const Statistics = () => {
     const [statistics, setStatistics] = useState({})
@@ -35,14 +36,24 @@ const Statistics = () => {
                              }}
                 />
             </Stack>
-            <Gap gap={30}/>
-            <label>
-                Количество проектов по отраслям:
-            </label>
-            <Gap gap={30}/>
-            <label>
-                Суммарная стоимость проектов по отраслям:
-            </label>
+            <div style={{display: "flex", width: "100%", gap: "50px"}}>
+                <div style={{width: "100%"}}>
+                    <Gap gap={30}/>
+                    <label>
+                        Количество проектов по отраслям:
+                    </label>
+                    <BarChart title={'Количество проектов по отраслям'} data={statistics?.projectsByIndustry}
+                              field={'count'}/>
+                </div>
+                <div style={{width: "100%"}}>
+                    <Gap gap={30}/>
+                    <label>
+                        Суммарная стоимость проектов по отраслям:
+                    </label>
+                    <BarChart title={'Количество проектов по отраслям'} data={statistics?.projectsByIndustry}
+                              field={'summaryCost'}/>
+                </div>
+            </div>
         </div>
     );
 };
