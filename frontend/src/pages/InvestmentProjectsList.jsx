@@ -15,6 +15,7 @@ import Stack from '@mui/material/Stack';
 function InvestmentProjectsList() {
     const [investmentProjects, setInvestmentProjects] = useState([])
     const [currInvestmentProjects, setCurrInvestmentProjects] = useState(investmentProjects)
+    const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"))
 
     useEffect(() => {
         setTimeout(
@@ -61,6 +62,11 @@ function InvestmentProjectsList() {
         });
     }
 
+    const onLogoutClick = () => {
+        localStorage.setItem("isAuth", "n")
+        setIsAuth('n')
+    }
+
     return (
         <div>
             <Stack direction={'row'}>
@@ -71,10 +77,27 @@ function InvestmentProjectsList() {
                 <Link to={'/stats/'}>
                     <Button type={'button'}>Статистика</Button>
                 </Link>
-                <Gap/>
-                <Button type={'button'} onClick={onDownloadButtonClick}>
-                    Выгрузить
-                </Button>
+                {
+                    (isAuth === 'n' || isAuth === undefined) &&
+                    <>
+                        <Gap/>
+                        <Link to={'/login/'}>
+                            <Button type={'button'}>Войти</Button>
+                        </Link>
+                    </>
+                }
+                {
+                    isAuth === 'y' &&
+                    <>
+                        <Gap/>
+                        <Button type={'button'} onClick={onDownloadButtonClick}>
+                            Выгрузить
+                        </Button>
+                        <Button type={'button'} onClick={onLogoutClick}>
+                            Выйти
+                        </Button>
+                    </>
+                }
             </Stack>
             <Gap/>
             <CustomInput
@@ -97,7 +120,7 @@ function InvestmentProjectsList() {
                                 Общая стоимость инвестиционного проекта, млн.
                                 руб
                             </TableCell>
-                            <TableCell></TableCell>
+                            {isAuth === 'y' && <TableCell></TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -111,11 +134,13 @@ function InvestmentProjectsList() {
                                 </TableCell>
                                 <TableCell>{item.totalWorkplaces}</TableCell>
                                 <TableCell>{item.totalCost}</TableCell>
-                                <TableCell>
-                                    <Link to={`/${item.fullName}`}>
-                                        <Button type={'button'}>паспорт</Button>
-                                    </Link>
-                                </TableCell>
+                                {isAuth === 'y' &&
+                                    <TableCell>
+                                        <Link to={`/${item.fullName}`}>
+                                            <Button type={'button'}>паспорт</Button>
+                                        </Link>
+                                    </TableCell>
+                                }
                             </TableRow>
                         )}
                     </TableBody>
