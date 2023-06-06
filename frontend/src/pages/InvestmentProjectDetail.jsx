@@ -22,7 +22,12 @@ const InvestmentProjectDetail = () => {
         return await axios.get(`http://localhost:8080/api/projects/${projectName}`)
     }
 
+    const getPageMargins = () => {
+        return `@page { margin: 20px 40px !important; }`;
+    };
+
     return (<>
+        <style>{getPageMargins()}</style>
         <Stack direction={'row'}>
             <Link to={'/'}>
                 <Button type={'button'}>На главную</Button>
@@ -36,7 +41,7 @@ const InvestmentProjectDetail = () => {
                 content={() => document.getElementById('passport')}
             />
         </Stack>
-        <div id={'passport'} style={{margin: "20px 40px"}}>
+        <div id={'passport'} >
             <Gap gap={30}/>
             <label>Полное наименование инвестиционного проекта:</label>
             <Gap/>
