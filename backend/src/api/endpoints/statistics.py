@@ -30,8 +30,8 @@ def get_stats(
                     }
             })
 
-            data = {
-                'projectsCount': len(projects),
-                'projectsByIndustry': projects_by_industry
-            }
+    data = {
+        'projectsCount': len(projects),
+        'projectsByIndustry': projects_by_industry
+    }
     return data

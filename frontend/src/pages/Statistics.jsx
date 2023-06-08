@@ -37,22 +37,30 @@ const Statistics = () => {
                 />
             </Stack>
             <div style={{display: "flex", width: "100%", gap: "50px"}}>
-                <div style={{width: "100%"}}>
-                    <Gap gap={30}/>
-                    <label>
-                        Количество проектов по отраслям:
-                    </label>
-                    <BarChart title={'Количество проектов по отраслям'} data={statistics?.projectsByIndustry}
-                              field={'count'}/>
-                </div>
-                <div style={{width: "100%"}}>
-                    <Gap gap={30}/>
-                    <label>
-                        Суммарная стоимость проектов по отраслям:
-                    </label>
-                    <BarChart title={'Количество проектов по отраслям'} data={statistics?.projectsByIndustry}
-                              field={'summaryCost'}/>
-                </div>
+                {
+                    statistics?.projectsByIndustry &&
+                    <>
+                        <div style={{width: "100%"}}>
+                            <Gap gap={30}/>
+                            <label>
+                                Количество проектов по отраслям:
+                            </label>
+                            <BarChart title={'Количество проектов по отраслям'}
+                                      data={statistics?.projectsByIndustry}
+                                      field={'count'}/>
+                        </div>
+                        <div style={{width: "100%"}}>
+                            <Gap gap={30}/>
+                            <label>
+                                Суммарная стоимость проектов по отраслям:
+                            </label>
+                            <BarChart title={'Количество проектов по отраслям'}
+                                      data={statistics?.projectsByIndustry}
+                                      field={'summaryCost'}/>
+                        </div>
+                    </>
+
+                }
             </div>
         </div>
     );
