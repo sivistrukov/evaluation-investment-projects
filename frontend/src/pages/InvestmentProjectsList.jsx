@@ -78,7 +78,7 @@ function InvestmentProjectsList() {
                     <Button type={'button'}>Статистика</Button>
                 </Link>
                 {
-                    (isAuth === 'n' || isAuth === undefined) &&
+                    isAuth !== 'y' &&
                     <>
                         <Gap/>
                         <Link to={'/login/'}>

@@ -41,7 +41,7 @@ const InvestmentProjectDetail = () => {
                 content={() => document.getElementById('passport')}
             />
         </Stack>
-        <div id={'passport'} >
+        <div id={'passport'}>
             <Gap gap={30}/>
             <label>Полное наименование инвестиционного проекта:</label>
             <Gap/>
@@ -60,7 +60,8 @@ const InvestmentProjectDetail = () => {
                 }}
             />
             <Gap gap={30}/>
-            <label style={{color: Number(investmentProject?.npv) < 0 && 'red'}}>NPV, руб.:</label>
+            <label style={{color: Number(investmentProject?.npv) < 0 && 'red'}}>Чистая приведенная стоимость (NPV),
+                руб:</label>
             <Gap/>
             <CustomInput
                 value={investmentProject?.npv?.toFixed(2)}
@@ -69,7 +70,8 @@ const InvestmentProjectDetail = () => {
                 }}
             />
             <Gap gap={30}/>
-            <label style={{color: Number(investmentProject?.pi) < 0 && 'red'}}>PI:</label>
+            <label style={{color: Number(investmentProject?.pi) < 0 && 'red'}}>Индекс рентабельности инвестиций
+                (PI):</label>
             <Gap/>
             <CustomInput
                 value={investmentProject?.pi?.toFixed(2)}
@@ -78,10 +80,10 @@ const InvestmentProjectDetail = () => {
                 }}
             />
             <Gap gap={30}/>
-            <label>IRR:</label>
+            <label>Внутренняя норма доходности (IRR), %:</label>
             <Gap/>
             <CustomInput
-                value={investmentProject?.irr?.toFixed(2) + ' %'}
+                value={investmentProject?.irr?.toFixed(2)}
                 InputProps={{
                     readOnly: true,
                 }}

@@ -477,7 +477,8 @@ function NewInvestmentProject() {
                     </Button>
                     <Gap gap={30}/>
                     <Stack>
-                        <label style={{color: Number(npv) < 0 && 'red'}}>NPV, руб.:</label>
+                        <label style={{color: Number(npv) < 0 && 'red'}}>Чистая приведенная стоимость (NPV),
+                            руб:</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'
@@ -488,7 +489,7 @@ function NewInvestmentProject() {
                             }}
                         />
                         <Gap/>
-                        <label style={{color: Number(pi) < 0 && 'red'}}>PI:</label>
+                        <label style={{color: Number(pi) < 0 && 'red'}}>Индекс рентабельности инвестиций (PI):</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'
@@ -500,11 +501,11 @@ function NewInvestmentProject() {
                         />
                         <Gap/>
                         <Gap/>
-                        <label style={{color: Number(irr) < 0 && 'red'}}>IRR:</label>
+                        <label style={{color: Number(irr) < 0 && 'red'}}>Внутренняя норма доходности (IRR), %::</label>
                         <Gap/>
                         <CustomInput
                             fullWidth='100%'
-                            value={irr.toFixed(2) + ' %'}
+                            value={irr.toFixed(2)}
                             name="irr"
                             InputProps={{
                                 readOnly: true,
