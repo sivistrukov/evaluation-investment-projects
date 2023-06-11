@@ -47,9 +47,34 @@ def export_investment_projects_by_excel(db: MongoClient) -> str:
     }
     statistics_df = DataFrame.from_dict(statistics_data)
 
+    npv = []
+    pi = []
+    irr = []
+    discount_payback_period = []
+    for project in projects:
+        npv.append(project['npv'])
+        pi.append(project['pi'])
+        irr.append(project['irr'])
+        discount_payback_period.append(project['discountPaybackPeriod'])
+    projects_indicators_data = {
+        'Название проекта': project_names,
+        'Чистая приведенная стоимость (NPV),руб': npv,
+        'Индекс рентабельности инвестиций (PI)': pi,
+        'Внутренняя норма доходности (IRR), %': irr,
+        'Дисконтированный срок окупаемости': discount_payback_period,
+    }
+    projects_indicators_df = DataFrame.from_dict(projects_indicators_data)
+
     filepath = path.join(settings.MEDIA_FILES_DIR, 'investment_projects.xlsx')
     writer = ExcelWriter(filepath, engine="openpyxl")
-    projects_df.to_excel(writer, index=False, sheet_name='Инвестиционные_проекты')
+    projects_df.to_excel(
+        writer, index=False,
+        sheet_name='Инвестиционные_проекты'
+    )
     statistics_df.to_excel(writer, index=False, sheet_name='Статистика')
+    projects_indicators_df.to_excel(
+        writer, index=False,
+        sheet_name='Показатели_инвестиционных_проектов'
+    )
     writer.close()
     return filepath

@@ -42,7 +42,10 @@ const Statistics = () => {
                     <>
                         <div style={{width: "100%"}}>
                             <Gap gap={30}/>
-                            <label>
+                            <label style={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
                                 Количество проектов по отраслям:
                             </label>
                             <BarChart title={'Количество проектов по отраслям'}
@@ -51,7 +54,10 @@ const Statistics = () => {
                         </div>
                         <div style={{width: "100%"}}>
                             <Gap gap={30}/>
-                            <label>
+                            <label style={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
                                 Суммарная стоимость проектов по отраслям:
                             </label>
                             <BarChart title={'Количество проектов по отраслям'}

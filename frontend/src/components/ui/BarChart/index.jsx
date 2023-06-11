@@ -25,7 +25,7 @@ const BarChart = ({title, data, field}) => {
                 datasets: [{
                     data: [],
                     borderColor: "#3333ff",
-                    backgroundColor: "rgba(0, 0, 255, 0.5)",
+                    backgroundColor: ["rgba(0, 0, 255, 0.5)"],
                     fill: true
                 },],
             }
@@ -39,13 +39,14 @@ const BarChart = ({title, data, field}) => {
     }, [data])
 
     if (Object.keys(barChartData).length === 0 || data === undefined) {
-        return (<div>HUI</div>)
+        return (<div>Ooops</div>)
     }
     return (
         <div style={{}}>
             <Bar
                 type="bar"
                 options={{
+                    indexAxis: "y",
                     title: {
                         display: true,
                         text: title,

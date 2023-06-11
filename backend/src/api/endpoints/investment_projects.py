@@ -33,7 +33,10 @@ def create_new_investment_project(
         payload: schemas.InvestmentProjectPost,
         db: MongoClient = Depends(get_db)
 ):
-    db.projects.insert_one(payload.dict())
+    payload_dict = payload.dict()
+    if payload_dict['industry'] == '':
+        payload_dict['industry'] = 'другое'
+    db.projects.insert_one(payload_dict)
     return
 
 
