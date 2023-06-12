@@ -61,7 +61,7 @@ const InvestmentProjectDetail = () => {
             />
             <Gap gap={30}/>
             <label style={{color: Number(investmentProject?.npv) < 0 && 'red'}}>Чистая приведенная стоимость (NPV),
-                руб:</label>
+                млн.руб:</label>
             <Gap/>
             <CustomInput
                 value={investmentProject?.npv?.toFixed(2)}
